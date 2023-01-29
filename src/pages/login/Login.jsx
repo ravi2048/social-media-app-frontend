@@ -1,7 +1,41 @@
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthUserContext } from "../../context/authUserContext";
 import "./Login.scss";
 
 export default function Login(){
+    const { login } = useContext(AuthUserContext);
+    const navigate = useNavigate();
+    const defaultInputs = {
+        username: "",
+        password: ""
+    };
+
+    const [inputs, setInputs] = useState(defaultInputs);
+    const [err, setErr] = useState(null);
+
+    const handleChange = (e) => {
+        setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
+        setErr(null);
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if(inputs.username === "" || inputs.password === "") {
+            setErr('Please fill all the fields!');
+            return;
+        }
+
+        try {
+            await login(inputs);
+            setErr(null);
+            setInputs(defaultInputs);
+            navigate('/');
+        } catch (error) {
+            setErr(error.response.data);
+        }
+    }
+
     return (
         <div className='login'>
             <div className='card'>
@@ -22,9 +56,10 @@ export default function Login(){
                 <div className='right-section'>
                     <h1>Login</h1>
                     <form>
-                        <input id='username' type='text' placeholder="Username" />
-                        <input id='password' type='password' placeholder="Password" />
-                        <button>Login</button>
+                        <input name='username' type='text' placeholder="Username" onChange={handleChange}/>
+                        <input name='password' type='password' placeholder="Password" onChange={handleChange}/>
+                        {err && <span>{err}</span>}
+                        <button onClick={handleSubmit}>Login</button>
                     </form>
                 </div>
             </div>

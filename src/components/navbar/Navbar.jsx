@@ -19,7 +19,7 @@ export default function Navbar() {
     return (
         <div className='navbar'>
             <div className='left-section'>
-                <Link style={{ textDecoration: "none" }} to='/home'>
+                <Link style={{ textDecoration: "none" }} to='/'>
                     <span>Reactbook</span>
                 </Link>
                 <HomeOutlinedIcon />

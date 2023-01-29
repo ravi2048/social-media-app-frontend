@@ -14,10 +14,12 @@ import Profile from "./pages/profile/Profile";
 import './style.scss';
 import { useContext } from "react";
 import { DarkThemeContext } from "./context/themeContext";
+import { AuthUserContext } from "./context/authUserContext";
 
 function App() {
-    const currUser = true;
-    const {darkMode} = useContext(DarkThemeContext);
+    const { currUser } = useContext(AuthUserContext);
+    const { darkMode } = useContext(DarkThemeContext);
+    
     const Layout = () => {
         return (
             <div className={darkMode ? `theme-dark` : `theme-light`}>
@@ -58,7 +60,7 @@ function App() {
             ),
             children: [
                 {
-                    path: "/home",
+                    path: "/",
                     element: <Home />,
                 },
                 {

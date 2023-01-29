@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 
 // create context
@@ -5,16 +6,14 @@ export const AuthUserContext = createContext();
 
 // create context provider
 export const AuthUserContextProvider = ({ children }) => {
-    const [currUser, setCurrUser] = useState({
-            id: "1",
-            name: "Ravi Yadav",
-            profilePic:
-                "https://images.pexels.com/photos/1426497/pexels-photo-1426497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        }
-    );
+    const [currUser, setCurrUser] = useState(JSON.parse(localStorage.getItem("currUser")) || null);
+    const backendUrl = 'http://localhost:8800/auth';
 
-    const login = () => {
-        // To Do 
+
+    const login = async (inputs) => {
+        const res = await axios.post(`${backendUrl}/login`, inputs, { withCredentials: true });
+        console.log(`res: ${JSON.stringify(res)}`);
+        setCurrUser(res.data);
     }
 
     useEffect(() => {
@@ -24,7 +23,7 @@ export const AuthUserContextProvider = ({ children }) => {
 
     // retuen the context and variables and functions to mutate them
     return (
-        <AuthUserContext.Provider value={{ currUser }}>
+        <AuthUserContext.Provider value={{ currUser, login }}>
             {children}
         </AuthUserContext.Provider>
     );
