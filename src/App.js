@@ -14,11 +14,12 @@ import Profile from "./pages/profile/Profile";
 import './style.scss';
 import { useContext } from "react";
 import { DarkThemeContext } from "./context/themeContext";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthUserContext } from "./context/authUserContext";
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 
 function App() {
-    const currUser = true;
-    const {darkMode} = useContext(DarkThemeContext);
+    const { currUser } = useContext(AuthUserContext);
+    const { darkMode } = useContext(DarkThemeContext);
     const queryClient = new QueryClient();
 
     const Layout = () => {
@@ -33,7 +34,7 @@ function App() {
                         </div>
                         <Rightbar />
                     </div>
-                </div>
+                </div>  
             </QueryClientProvider>
         );
     };
