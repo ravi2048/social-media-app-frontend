@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+import { makeRequest } from "../../axios";
 import Post from "../post/Post";
 import "./Posts.scss";
 
@@ -22,6 +24,10 @@ const Posts = () => {
             desc: "Tenetur iste voluptates dolorem rem commodi voluptate pariatur, voluptatum, laboriosam consequatur enim nostrum cumque! Maiores a nam non adipisci minima modi tempore.",
         },
     ];
+
+    const {data, error} = useQuery(["posts"], () => {
+        makeRequest.get("/posts").then(date => console.log(date))
+    });
 
     return (
         <div className='posts'>
