@@ -27,11 +27,9 @@ const Posts = () => {
 
     const { data, error, isLoading } = useQuery(["posts"], () => {
         return makeRequest.get("/posts/all-posts").then(res => {
-        //  return res.data;
-        console.log(`res: ${JSON.stringify(res)}`);
+            return res.data;
         })
     });
-    // console.log(`res: ${JSON.stringify(data)}`);
 
     return (
         <div className='posts'>
