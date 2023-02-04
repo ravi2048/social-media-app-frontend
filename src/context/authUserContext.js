@@ -12,13 +12,13 @@ export const AuthUserContextProvider = ({ children }) => {
 
     const login = async (inputs) => {
         const res = await axios.post(`${backendUrl}/login`, inputs, { withCredentials: true });
-        console.log(`res: ${JSON.stringify(res)}`);
         setCurrUser(res.data);
     }
 
     useEffect(() => {
         // check localstorage and update, locastorage does not store objects, so convert to string first
         localStorage.setItem("currUser", JSON.stringify(currUser));
+        console.log(`inside setting token, ${JSON.stringify(currUser)}`);
     }, [currUser]);
 
     // retuen the context and variables and functions to mutate them
