@@ -8,12 +8,34 @@ import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useState } from "react";
 import moment from 'moment';
+import { makeRequest } from "../../axios";
+import { useQuery } from "@tanstack/react-query";
 
 const Post = ({ post }) => {
     const [commentOpen, setCommentOpen] = useState(false);
+    const [postLiked, setPostLiked] = useState(false);
+    let likesCount = 0;
+    let commentsCount = 0;
 
+    const likesObj = useQuery(["likes"], () => {
+        return makeRequest.get(`/likes/${post.id}`, (res) => {
+            return res.data;
+        })
+    });
+    const commentsObj = useQuery(["commentsCount"], () => {
+        return makeRequest.get(`/comments/count/${post.id}`, (res) => {
+            return res.data;
+        })
+    });
+    if(!likesObj.isLoading) {
+        likesCount = likesObj.data.data;
+    }
+    if(!commentsObj.isLoading) {
+        commentsCount = commentsObj.data.data;
+    }
+    console.log(`likesObj: ${JSON.stringify(likesObj.data)}`);
     //TEMPORARY
-    const liked = false;
+    const liked = true;
 
     return (
         <div className='post'>
@@ -43,25 +65,25 @@ const Post = ({ post }) => {
                 <div className='info'>
                     <div className='item'>
                         {liked ? (
-                            <FavoriteOutlinedIcon />
+                            <FavoriteOutlinedIcon style={{color:"red"}}/>
                         ) : (
                             <FavoriteBorderOutlinedIcon />
                         )}
-                        12 Likes
+                        {likesCount} Likes
                     </div>
                     <div
                         className='item'
                         onClick={() => setCommentOpen(!commentOpen)}
                     >
                         <TextsmsOutlinedIcon />
-                        12 Comments
+                        {commentsCount} Comments
                     </div>
                     <div className='item'>
                         <ShareOutlinedIcon />
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments />}
+                {commentOpen && <Comments postId={post.id}/>}
             </div>
         </div>
     );

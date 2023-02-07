@@ -1,45 +1,74 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import "./Comments.scss";
 import { AuthUserContext } from "../../context/authUserContext";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { makeRequest } from "../../axios";
+import moment from 'moment';
 
-const Comments = () => {
+const Comments = ({postId}) => {
     const { currUser } = useContext(AuthUserContext);
-    //Temporary
-    const comments = [
-        {
-            id: 1,
-            desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem nequeaspernatur ullam aperiam. Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem nequeaspernatur ullam aperiam",
-            name: "John Doe",
-            userId: 1,
-            profilePicture:
-                "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    const [newComment, setNewComment] = useState('');
+    const [loading, setLoading] = useState(false);
+    const {data, error, isLoading } = useQuery(["comments"], () => {
+        return makeRequest.get(`/comments/${postId}`).then(res => {
+            return res.data;
+        })
+    });
+
+    const queryClient = useQueryClient();
+    const mutation = useMutation(
+        (newCommentObj) => {
+            setLoading(true);
+            return makeRequest.post(`/comments/addComment/${postId}`, newCommentObj);
         },
         {
-            id: 2,
-            desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem nequeaspernatur ullam aperiam",
-            name: "Jane Doe",
-            userId: 2,
-            profilePicture:
-                "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-        },
-    ];
+            onSuccess: () => {
+                // refetch the posts to render updated data
+                // invalidate the stale api and refetch
+                queryClient.invalidateQueries(["comments"]);
+                queryClient.invalidateQueries(["commentsCount"]);
+                setLoading(false);
+                setNewComment('');
+            },
+        }
+    );
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if(newComment === "") {
+            alert('Please enter the comment');
+            return;
+        }
+        mutation.mutate({
+            desc: newComment,
+            userId: currUser.id
+        });
+    }
+
+
     return (
         <div className='comments'>
             <div className='write'>
                 <img src={currUser.profilePic} alt='' />
-                <input type='text' placeholder='write a comment' />
-                <button>Send</button>
+                <input type='text' placeholder='write a comment' value={newComment} onChange={(e) => setNewComment(e.target.value)} />
+                <button onClick={handleSubmit}>{loading ? 'Sending..' : 'Send'}</button>
             </div>
-            {comments.map((comment) => (
-                <div className='comment' key={comment.id}>
-                    <img src={comment.profilePicture} alt='' />
-                    <div className='info'>
-                        <span>{comment.name}</span>
-                        <p>{comment.desc}</p>
+            {error ? (
+                "Something went wrong"
+            ) : !isLoading ? (
+                data.map((comment) => (
+                    <div className='comment' key={comment.id}>
+                        <img src={comment.user.profilePic} alt='' />
+                        <div className='info'>
+                            <span>{comment.user.name}</span>
+                            <p>{comment.desc}</p>
+                        </div>
+                        <span className='date'>{moment(comment.createdAt, 'YYYY-MM-DD HH:mm:ss').fromNow()}</span>
                     </div>
-                    <span className='date'>1 hour ago</span>
-                </div>
-            ))}
+                ))
+            ) : (
+                <span>Loading...</span>
+            )}
         </div>
     );
 };
