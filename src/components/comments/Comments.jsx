@@ -45,8 +45,6 @@ const Comments = ({postId}) => {
         });
     }
 
-    console.log('in comments', typeof postId)
-
     return (
         <div className='comments'>
             <div className='write'>
