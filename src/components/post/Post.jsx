@@ -6,36 +6,63 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import moment from 'moment';
 import { makeRequest } from "../../axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AuthUserContext } from "../../context/authUserContext";
 
 const Post = ({ post }) => {
+    const { currUser } = useContext(AuthUserContext);
     const [commentOpen, setCommentOpen] = useState(false);
-    const [postLiked, setPostLiked] = useState(false);
+    const queryClient = useQueryClient();
     let likesCount = 0;
     let commentsCount = 0;
 
-    const likesObj = useQuery(["likes"], () => {
-        return makeRequest.get(`/likes/${post.id}`, (res) => {
+    
+    // fetch likes
+    const likesObj = useQuery(["likesCount", post.id], () => {
+        return makeRequest.get(`/likes/${post.id}`).then(res => {
             return res.data;
-        })
-    });
-    const commentsObj = useQuery(["commentsCount"], () => {
-        return makeRequest.get(`/comments/count/${post.id}`, (res) => {
-            return res.data;
-        })
+        });
     });
     if(!likesObj.isLoading) {
-        likesCount = likesObj.data.data;
+        likesCount = likesObj.data.length;
     }
+
+    // fetch comments
+    const commentsObj = useQuery(["commentsCount", post.id], () => {
+        return makeRequest.get(`/comments/count/${post.id}`).then(res => {
+            return res.data;
+        });
+    });
     if(!commentsObj.isLoading) {
-        commentsCount = commentsObj.data.data;
+        commentsCount = commentsObj.data;
     }
-    console.log(`likesObj: ${JSON.stringify(likesObj.data)}`);
-    //TEMPORARY
-    const liked = true;
+
+
+    // add/delete like mutation
+    const mutation = useMutation((isLiked) => {
+        if(!isLiked) {
+            const newLikeObj = {
+                postId: post.id,
+                userId: currUser.id
+            }
+            return makeRequest.post(`/likes/${post.id}`, newLikeObj);
+        } else {
+            return makeRequest.delete(`/likes/${post.id}`);
+        }
+    }, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["likesCount", post.id]);
+        }
+    });
+
+
+    const likesHandler = async() => {
+        const isLiked = likesObj.data.includes(currUser.id);
+        mutation.mutate(isLiked);
+    };
 
     return (
         <div className='post'>
@@ -63,11 +90,11 @@ const Post = ({ post }) => {
                     <img src={post.img} alt='' />
                 </div>
                 <div className='info'>
-                    <div className='item'>
-                        {liked ? (
+                    <div className='item' onClick={likesHandler}>
+                        { !likesObj.isLoading && likesObj.data.includes(currUser.id) ? (
                             <FavoriteOutlinedIcon style={{color:"red"}}/>
                         ) : (
-                            <FavoriteBorderOutlinedIcon />
+                            <FavoriteBorderOutlinedIcon/>
                         )}
                         {likesCount} Likes
                     </div>

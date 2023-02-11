@@ -20,7 +20,14 @@ import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-quer
 function App() {
     const { currUser } = useContext(AuthUserContext);
     const { darkMode } = useContext(DarkThemeContext);
-    const queryClient = new QueryClient();
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                refetchOnWindowFocus: false,
+                refetchOnMount: false,
+            },
+        },
+    });
 
     const Layout = () => {
         return (

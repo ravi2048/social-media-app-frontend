@@ -9,7 +9,7 @@ const Comments = ({postId}) => {
     const { currUser } = useContext(AuthUserContext);
     const [newComment, setNewComment] = useState('');
     const [loading, setLoading] = useState(false);
-    const {data, error, isLoading } = useQuery(["comments"], () => {
+    const {data, error, isLoading } = useQuery(["comments", postId], () => {
         return makeRequest.get(`/comments/${postId}`).then(res => {
             return res.data;
         })
@@ -25,8 +25,8 @@ const Comments = ({postId}) => {
             onSuccess: () => {
                 // refetch the posts to render updated data
                 // invalidate the stale api and refetch
-                queryClient.invalidateQueries(["comments"]);
-                queryClient.invalidateQueries(["commentsCount"]);
+                queryClient.invalidateQueries(["comments", postId]);
+                queryClient.invalidateQueries(["commentsCount", postId]);
                 setLoading(false);
                 setNewComment('');
             },
@@ -45,6 +45,7 @@ const Comments = ({postId}) => {
         });
     }
 
+    console.log('in comments', typeof postId)
 
     return (
         <div className='comments'>
