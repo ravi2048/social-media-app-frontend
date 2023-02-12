@@ -10,23 +10,65 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Posts from "../../components/posts/Posts";
 import "./Profile.scss";
 import { useLocation } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
 import { useContext } from "react";
 import { AuthUserContext } from "../../context/authUserContext";
+import { useState } from "react";
+import Update from "../../components/update/Update";
 
 const Profile = () => {
+    const queryClient = useQueryClient();
+    const [loading, setLoading] = useState(false);
+    const [openUpdateModal, setOpenUpdate] = useState(false);
+
     const { currUser } = useContext(AuthUserContext);
     const userId = parseInt(useLocation().pathname.split("/")[2]);
-    const { data, isLoading, error } = useQuery(["user"], () => {
+
+    const { data, isLoading, error } = useQuery(["user", userId], () => {
         return makeRequest.get(`/users/${userId}`).then(res => {
             return res.data;
         });
     });
 
+
+    const relationObj = useQuery(["relation", currUser.id, userId], () => {
+        return makeRequest.get(`/relations?friendId=${userId}`).then(res => {
+            return res.data;
+        })
+    });
+    // {"status":"success","fetchStatus":"idle","isLoading":false,"isSuccess":true,"isError":false,"isInitialLoading":false,"data":{"id":3,"userId":7,"friendId":3,"UserId":7},"dataUpdatedAt":1676184385312,"error":null,"errorUpdatedAt":0,"failureCount":0,"failureReason":null,"errorUpdateCount":0,"isFetched":true,"isFetchedAfterMount":true,"isFetching":false,"isRefetching":false,"isLoadingError":false,"isPaused":false,"isPlaceholderData":false,"isPreviousData":false,"isRefetchError":false,"isStale":true}
+
+
+    // follow/unfollow
+    const mutation = useMutation((followed) => {
+        if(followed) {
+            return makeRequest.delete(`/relations?friendId=${userId}`);
+        } else {
+            return makeRequest.post(`/relations?friendId=${userId}`);
+        }
+    },
+    {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["relation", currUser.id, userId]);
+        }
+    });
+
+    const followHandler = async () => {
+        setLoading(true);
+        // check if loggedin user has followed this current user whos prfile is being viewed
+        if(relationObj.data) {
+            // already followed, unfollow
+            mutation.mutate(true);
+        } else {
+            mutation.mutate(false);
+        }
+        setLoading(false);
+    };
+
     return (
         <>
-            {isLoading ? (
+            {error ? <span>Something went wrong</span> : isLoading ? (
                 <span>Loading...</span>
             ) : (
                 <div className='profile'>
@@ -70,8 +112,9 @@ const Profile = () => {
                                     </div>
                                 </div>
                                 {
-                                    (currUser.id === userId) ? <button>Update</button>
-                                    : <button>follow</button>
+                                    (currUser.id === userId) ? <button onClick={() => setOpenUpdate(true)}>Update</button>
+                                    : (relationObj.data) ? <button onClick={followHandler}>{loading ? "Unfollowing..": "Unfollow"}</button>
+                                    : <button onClick={followHandler}>{loading ? "Following..": "Follow"}</button>
                                 }
                 
                             </div>
@@ -80,7 +123,8 @@ const Profile = () => {
                                 <MoreVertIcon />
                             </div>
                         </div>
-                        <Posts />
+                        <Posts userId={userId}/>
+                        {openUpdateModal && <Update setOpenUpdate={setOpenUpdate} user={data}/>}
                     </div>
                 </div>
             )}

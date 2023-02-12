@@ -22,7 +22,7 @@ const Share = () => {
             onSuccess: () => {
                 // refetch the posts to render updated data
                 // invalidate the stale api and refetch
-                queryClient.invalidateQueries(["posts"]);
+                queryClient.invalidateQueries(["posts", "allUsersPosts"]);
                 setLoading(false);
                 setDesc('');
                 setImg('');

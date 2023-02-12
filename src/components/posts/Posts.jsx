@@ -3,11 +3,17 @@ import { makeRequest } from "../../axios";
 import Post from "../post/Post";
 import "./Posts.scss";
 
-const Posts = () => {
-    const { data, error, isLoading } = useQuery(["posts"], () => {
-        return makeRequest.get("/posts/all-posts").then(res => {
-            return res.data;
-        })
+const Posts = ({userId}) => {
+    const { data, error, isLoading } = useQuery(["posts", userId], () => {
+        if(userId) {
+            return makeRequest.get(`/posts/user-posts/${userId}`).then(res => {
+                return res.data;
+            });
+        } else {
+            return makeRequest.get("/posts/all-posts").then(res => {
+                return res.data;
+            });
+        }
     });
 
     return (

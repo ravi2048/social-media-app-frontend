@@ -22,7 +22,7 @@ export const AuthUserContextProvider = ({ children }) => {
 
     // retuen the context and variables and functions to mutate them
     return (
-        <AuthUserContext.Provider value={{ currUser, login }}>
+        <AuthUserContext.Provider value={{ currUser, setCurrUser, login }}>
             {children}
         </AuthUserContext.Provider>
     );

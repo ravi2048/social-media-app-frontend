@@ -15,7 +15,7 @@ import './style.scss';
 import { useContext } from "react";
 import { DarkThemeContext } from "./context/themeContext";
 import { AuthUserContext } from "./context/authUserContext";
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
     const { currUser } = useContext(AuthUserContext);
