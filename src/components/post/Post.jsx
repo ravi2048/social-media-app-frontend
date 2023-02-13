@@ -15,6 +15,7 @@ import { AuthUserContext } from "../../context/authUserContext";
 const Post = ({ post }) => {
     const { currUser } = useContext(AuthUserContext);
     const [commentOpen, setCommentOpen] = useState(false);
+    const [openPostActionMenu, setOpenPostActionMenu] = useState(false);
     const queryClient = useQueryClient();
     let likesCount = 0;
     let commentsCount = 0;
@@ -64,6 +65,18 @@ const Post = ({ post }) => {
         mutation.mutate(isLiked);
     };
 
+    const deleteMutation = useMutation((postId) => {
+        return makeRequest.delete(`/posts/${postId}`);
+    }, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["posts"]);
+        }
+    });
+
+    const postDeleteHandler = async () => {
+        deleteMutation.mutate(post.id);
+    }
+
     return (
         <div className='post'>
             <div className='container'>
@@ -83,7 +96,8 @@ const Post = ({ post }) => {
                             <span className='date'>{moment(post.createdAt, "YYYY-MM-DD HH:mm:ss").fromNow()}</span>
                         </div>
                     </div>
-                    <MoreHorizIcon />
+                    {(currUser.id === post.userId) && <MoreHorizIcon style={{cursor: "pointer"}} onClick={() => setOpenPostActionMenu(!openPostActionMenu)}/>}
+                    {openPostActionMenu && <button onClick={postDeleteHandler}>Delete</button>}
                 </div>
                 <div className='content'>
                     <p>{post.desc}</p>

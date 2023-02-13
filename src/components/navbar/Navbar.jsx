@@ -22,11 +22,10 @@ export default function Navbar() {
                 <Link style={{ textDecoration: "none" }} to='/'>
                     <span>Reactbook</span>
                 </Link>
-                <HomeOutlinedIcon />
                 {darkMode ? (
-                    <WbSunnyOutlinedIcon onClick={toggleTheme} />
+                    <WbSunnyOutlinedIcon style={{ cursor: "pointer" }} onClick={toggleTheme} />
                 ) : (
-                    <DarkModeOutlinedIcon onClick={toggleTheme} />
+                    <DarkModeOutlinedIcon style={{ cursor: "pointer" }} onClick={toggleTheme} />
                 )}
                 <GridViewOutlinedIcon />
                 <div className='search'>
@@ -38,13 +37,22 @@ export default function Navbar() {
                 <PersonOutlineOutlinedIcon />
                 <EmailOutlinedIcon />
                 <NotificationsOutlinedIcon />
-                <div className='user-icon'>
-                    <img
-                        alt='user-icon'
-                        src={currUser.profilePic}
-                    />
-                    <span>{currUser.name}</span>
-                </div>
+                <Link
+                    to={`/profile/${currUser.id}`}
+                    style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                    }}
+                >
+                    <div className='user-icon'>
+                        <img
+                            alt='user-icon'
+                            src={currUser.profilePic}
+                        />
+                        <span>{currUser.name}</span>
+                    </div>
+                </Link>
+
             </div>
         </div>
     );

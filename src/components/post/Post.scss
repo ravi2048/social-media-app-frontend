@@ -20,6 +20,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                position: relative;
 
                 .userInfo {
                     display: flex;
@@ -44,6 +45,15 @@
                             font-size: 12px;
                         }
                     }
+                }
+
+                button {
+                    cursor: pointer;
+                    position: absolute;
+                    top: 30px;
+                    right: 0;
+                    padding: 0 5px;
+                    border-radius: 5px;
                 }
             }
 
