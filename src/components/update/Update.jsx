@@ -38,7 +38,7 @@ const Update = ({ setOpenUpdate, user }) => {
         if(e.target.id === 'cover') {
             setCover(base64);
         }
-        if(e.target.id === 'pofile') {
+        if(e.target.id === 'profile') {
             setProfile(base64);
         }
     };
