@@ -13,20 +13,6 @@ const Update = ({ setOpenUpdate, user }) => {
     const [email, setEmail] = useState(user.email);
     const [city, setCity] = useState(user.city);
     const [website, setWebsite] = useState(user.website);
-    const { setCurrUser } = useContext(AuthUserContext);
-
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
-            fileReader.onload = () => {
-                resolve(fileReader.result);
-            };
-            fileReader.onerror = (error) => {
-                reject(error);
-            };
-        });
-    };
 
     const handleFileUpload = async(e) => {
         const file = e.target.files[0];
@@ -34,13 +20,7 @@ const Update = ({ setOpenUpdate, user }) => {
             alert('Please upload image of size less than 2MB');
             return;
         }
-        const base64 = await convertToBase64(file);
-        if(e.target.id === 'cover') {
-            setCover(base64);
-        }
-        if(e.target.id === 'profile') {
-            setProfile(base64);
-        }
+        e.target.id === 'cover' ? setCover(file): setProfile(file);        
     };
 
     const queryClient = useQueryClient();
@@ -53,17 +33,34 @@ const Update = ({ setOpenUpdate, user }) => {
             onSuccess: () => {
                 // Invalidate and refetch
                 queryClient.invalidateQueries(["user", user.id]);
-                console.log(`after onsuccess hook ${JSON.stringify(user)}`);
             },
         }
     );
 
+    const upload = async (img) => {
+        try {
+            const formData = new FormData();
+            formData.append("file", img);
+            const res = await makeRequest.post("/upload", formData);
+            return res.data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleClick = async (e) => {
         e.preventDefault();
-        let coverUrl;
-        let profileUrl;
-        coverUrl = cover ? cover : user.coverPic;
-        profileUrl = profile ? profile : user.profilePic;
+        let coverImg = cover ? cover : user.coverPic;;
+        let profileImg = profile ? profile : user.profilePic;
+
+        let coverUrl = "";
+        let profileUrl = "";
+        if(coverImg) {
+            coverUrl = await upload(coverImg);
+        }
+        if(profileImg) {
+            profileUrl = await upload(profileImg);
+        }
 
         mutation.mutate({ name: name, email: email, website: website, city: city, coverPic: coverUrl, profilePic: profileUrl });
         setOpenUpdate(false);
@@ -81,7 +78,7 @@ const Update = ({ setOpenUpdate, user }) => {
                             <span>Cover Picture</span>
                             <div className="imgContainer">
                                 <img
-                                    src={ cover ? cover : user.coverPic }
+                                    src={ cover ? URL.createObjectURL(cover) : `${process.env.REACT_APP_API_HOST}/files/${user.coverPic}` }
                                     alt=""
                                 />
                                 <CloudUploadIcon className="icon" />
@@ -97,7 +94,7 @@ const Update = ({ setOpenUpdate, user }) => {
                             <span>Profile Picture</span>
                             <div className="imgContainer">
                                 <img
-                                    src={ profile ? profile : user.profilePic }
+                                    src={ profile ? URL.createObjectURL(profile) : `${process.env.REACT_APP_API_HOST}/files/${user.profilePic}` }
                                     alt=""
                                 />
                                 <CloudUploadIcon className="icon" />

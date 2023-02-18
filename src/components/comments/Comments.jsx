@@ -5,14 +5,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
 import moment from 'moment';
 
-const Comments = ({postId}) => {
+const Comments = ({postId, commentsCount}) => {
     const { currUser } = useContext(AuthUserContext);
     const [newComment, setNewComment] = useState('');
     const [loading, setLoading] = useState(false);
+
     const {data, error, isLoading } = useQuery(["comments", postId], () => {
         return makeRequest.get(`/comments/${postId}`).then(res => {
             return res.data;
         })
+    }, {
+        enabled: !(commentsCount === 0)
     });
 
     const queryClient = useQueryClient();
@@ -48,18 +51,18 @@ const Comments = ({postId}) => {
     return (
         <div className='comments'>
             <div className='write'>
-                <img src={currUser.profilePic} alt='' />
+                <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser.profilePic}`} alt='' />
                 <input type='text' placeholder='write a comment' value={newComment} onChange={(e) => setNewComment(e.target.value)} />
                 <button onClick={handleSubmit}>{loading ? 'Sending..' : 'Send'}</button>
             </div>
-            {error ? (
+            { commentsCount === 0 ? <span>No comments yet.</span> : error ? (
                 "Something went wrong"
             ) : !isLoading ? (
                 data.map((comment) => (
                     <div className='comment' key={comment.id}>
-                        <img src={comment.user.profilePic} alt='' />
+                        <img src={`${process.env.REACT_APP_API_HOST}/files/${comment.user.profilePic}`} alt='' />
                         <div className='info'>
-                            <span>{comment.user.name}</span>
+                            <span className="user-name">{comment.user.name}</span>
                             <p>{comment.desc}</p>
                         </div>
                         <span className='date'>{moment(comment.createdAt, 'YYYY-MM-DD HH:mm:ss').fromNow()}</span>

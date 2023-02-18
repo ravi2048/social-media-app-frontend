@@ -19,7 +19,6 @@ const Post = ({ post }) => {
     const queryClient = useQueryClient();
     let likesCount = 0;
     let commentsCount = 0;
-
     
     // fetch likes
     const likesObj = useQuery(["likesCount", post.id], () => {
@@ -40,7 +39,6 @@ const Post = ({ post }) => {
     if(!commentsObj.isLoading) {
         commentsCount = commentsObj.data;
     }
-
 
     // add/delete like mutation
     const mutation = useMutation((isLiked) => {
@@ -82,7 +80,7 @@ const Post = ({ post }) => {
             <div className='container'>
                 <div className='user'>
                     <div className='userInfo'>
-                        <img src={post.user.profilePic} alt='' />
+                        <img src={`${process.env.REACT_APP_API_HOST}/files/${post.user.profilePic}`} alt='' />
                         <div className='details'>
                             <Link
                                 to={`/profile/${post.userId}`}
@@ -93,22 +91,42 @@ const Post = ({ post }) => {
                             >
                                 <span className='name'>{post.user.name}</span>
                             </Link>
-                            <span className='date'>{moment(post.createdAt, "YYYY-MM-DD HH:mm:ss").fromNow()}</span>
+                            <span className='date'>
+                                {moment(
+                                    post.createdAt,
+                                    "YYYY-MM-DD HH:mm:ss"
+                                ).fromNow()}
+                            </span>
                         </div>
                     </div>
-                    {(currUser.id === post.userId) && <MoreHorizIcon style={{cursor: "pointer"}} onClick={() => setOpenPostActionMenu(!openPostActionMenu)}/>}
-                    {openPostActionMenu && <button onClick={postDeleteHandler}>Delete</button>}
+                    {currUser.id === post.userId && (
+                        <MoreHorizIcon
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                                setOpenPostActionMenu(!openPostActionMenu)
+                            }
+                        />
+                    )}
+                    {openPostActionMenu && (
+                        <button onClick={postDeleteHandler}>Delete</button>
+                    )}
                 </div>
                 <div className='content'>
                     <p>{post.desc}</p>
-                    <img src={post.img} alt='' />
+                    {post.img && (
+                        <img
+                            src={`${process.env.REACT_APP_API_HOST}/files/${post.img}`}
+                            alt=''
+                        />
+                    )}
                 </div>
                 <div className='info'>
                     <div className='item' onClick={likesHandler}>
-                        { !likesObj.isLoading && likesObj.data.includes(currUser.id) ? (
-                            <FavoriteOutlinedIcon style={{color:"red"}}/>
+                        {!likesObj.isLoading &&
+                        likesObj.data.includes(currUser.id) ? (
+                            <FavoriteOutlinedIcon style={{ color: "red" }} />
                         ) : (
-                            <FavoriteBorderOutlinedIcon/>
+                            <FavoriteBorderOutlinedIcon />
                         )}
                         {likesCount} Likes
                     </div>
@@ -124,7 +142,7 @@ const Post = ({ post }) => {
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments postId={post.id}/>}
+                {commentOpen && <Comments postId={post.id} commentsCount={commentsCount} />}
             </div>
         </div>
     );

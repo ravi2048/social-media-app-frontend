@@ -11,6 +11,7 @@ import "./Navbar.scss";
 import { useContext } from "react";
 import { DarkThemeContext } from "../../context/themeContext";
 import { AuthUserContext } from "../../context/authUserContext";
+import appIcon from "../../assets/app-icon.png";
 
 export default function Navbar() {
     const { darkMode, toggleTheme } = useContext(DarkThemeContext);
@@ -19,14 +20,16 @@ export default function Navbar() {
     return (
         <div className='navbar'>
             <div className='left-section'>
-                <Link style={{ textDecoration: "none" }} to='/'>
-                    <span>Reactbook</span>
+                <Link className="app-icon" style={{ textDecoration: "none" }} to='/'>
+                    <img src={appIcon}/>
+                    <span>reactSocial</span>
                 </Link>
-                {darkMode ? (
+                <HomeOutlinedIcon/>
+                {/* {darkMode ? (
                     <WbSunnyOutlinedIcon style={{ cursor: "pointer" }} onClick={toggleTheme} />
                 ) : (
                     <DarkModeOutlinedIcon style={{ cursor: "pointer" }} onClick={toggleTheme} />
-                )}
+                )} */}
                 <GridViewOutlinedIcon />
                 <div className='search'>
                     <SearchOutlinedIcon />
@@ -34,7 +37,7 @@ export default function Navbar() {
                 </div>
             </div>
             <div className='right-section'>
-                <PersonOutlineOutlinedIcon />
+                {/* <PersonOutlineOutlinedIcon /> */}
                 <EmailOutlinedIcon />
                 <NotificationsOutlinedIcon />
                 <Link
@@ -47,9 +50,9 @@ export default function Navbar() {
                     <div className='user-icon'>
                         <img
                             alt='user-icon'
-                            src={currUser.profilePic}
+                            src={`${process.env.REACT_APP_API_HOST}/files/${currUser.profilePic}`}
                         />
-                        <span>{currUser.name}</span>
+                        <span style={{textTransform: "capitalize"}}>{currUser.name}</span>
                     </div>
                 </Link>
 

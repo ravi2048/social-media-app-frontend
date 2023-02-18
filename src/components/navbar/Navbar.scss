@@ -23,6 +23,16 @@
             align-items: center;
             gap: 20px;
 
+            .app-icon {
+                display: flex;
+                gap: 5px;
+                img {
+                    width: 30px;
+                    height: 30px;
+                    margin: auto 5px;
+                }
+            }
+
             span {
                 font-size: 2rem;
                 font-weight: 540;

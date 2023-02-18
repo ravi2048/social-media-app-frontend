@@ -14,6 +14,7 @@ const Share = () => {
     const [loading, setLoading] = useState(false);
 
     const queryClient = useQueryClient();
+    // create new post
     const mutation = useMutation((newPost) => {
             setLoading(true);
             return makeRequest.post("/posts/create", newPost);
@@ -22,7 +23,7 @@ const Share = () => {
             onSuccess: () => {
                 // refetch the posts to render updated data
                 // invalidate the stale api and refetch
-                queryClient.invalidateQueries(["posts", "allUsersPosts"]);
+                queryClient.invalidateQueries(["posts"]);
                 setLoading(false);
                 setDesc('');
                 setImg('');
@@ -30,18 +31,19 @@ const Share = () => {
         }
     );
 
-    const convertToBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
-            fileReader.onload = () => {
-                resolve(fileReader.result);
-            };
-            fileReader.onerror = (error) => {
-                reject(error);
-            };
-        });
-    };
+    // uploading base64 file string is expansive, using server disk
+    // const convertToBase64 = (file) => {
+    //     return new Promise((resolve, reject) => {
+    //         const fileReader = new FileReader();
+    //         fileReader.readAsDataURL(file);
+    //         fileReader.onload = () => {
+    //             resolve(fileReader.result);
+    //         };
+    //         fileReader.onerror = (error) => {
+    //             reject(error);
+    //         };
+    //     });
+    // };
 
     const handleFileUpload = async(e) => {
         const file = e.target.files[0];
@@ -49,17 +51,32 @@ const Share = () => {
             alert('Please upload image of size less than 2MB');
             return;
         }
-        const base64 = await convertToBase64(file);
-        setImg(base64);
+        // const base64 = await convertToBase64(file);
+        setImg(file);
     };
 
-    const handleClick = (e) => {
+    const upload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("file", img);
+            const res = await makeRequest.post("/upload", formData);
+            return res.data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleClick = async (e) => {
         if(desc === '') {
             alert('Please enter your post description');
             return;
         }
         e.preventDefault();
-        mutation.mutate({desc, img});
+        let imgUrl = "";
+        if(img) {
+            imgUrl = await upload();
+        }
+        mutation.mutate({desc, img: imgUrl});
     };
 
     return (
@@ -67,7 +84,7 @@ const Share = () => {
             <div className='container'>
                 <div className='top'>
                     <div className="left">
-                        <img src={currUser.profilePic} alt='profileImg' />
+                        <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser.profilePic}`} alt='profileImg' />
                         <input
                             type='text'
                             placeholder={`What's on your mind ${currUser.name.split(" ")[0]}?`}
@@ -76,7 +93,7 @@ const Share = () => {
                         />
                     </div>
                     <div className="right">
-                        {img && <img alt="chosenImg" src={img}/>}
+                        {img && <img alt="chosenImg" src={URL.createObjectURL(img)}/>}
                     </div>
                 </div>
                 <hr />

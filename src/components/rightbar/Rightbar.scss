@@ -58,7 +58,7 @@
 
                         img {
                             height: 30px;
-                            width: 30px;
+                            min-width: 30px;
                             border-radius: 50%;
                             object-fit: cover;
                         }
@@ -96,6 +96,7 @@
                             border: none;
                             color: white;
                             cursor: pointer;
+                            border-radius: 3px;
 
                             &:first-child {
                                 background-color: #5271ff;
