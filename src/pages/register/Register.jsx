@@ -70,6 +70,11 @@ export default function Register() {
                         />
                         {err && <span>{err}</span>}
                         <button onClick={handleSubmit}>Register</button>
+                        <span>Already have an account? &nbsp;
+                        <Link to="/login">
+                            Login
+                        </Link>
+                        </span>
                     </form>
                 </div>
                 <div className='right-section'>
@@ -77,14 +82,9 @@ export default function Register() {
                     <p>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.
+                        magna aliqua.
                     </p>
-                    <span>Already have an account?</span>
-                    <Link to="/login">
-                        <button>Login</button>
-                    </Link>
+                    
                 </div>
             </div>
         </div>

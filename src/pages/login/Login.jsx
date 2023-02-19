@@ -44,14 +44,8 @@ export default function Login(){
                     <p>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.
+                        magna aliqua.
                     </p>
-                    <span>Don't have an account?</span>
-                    <Link to="/register">
-                        <button>Register</button>                    
-                    </Link>
                 </div>
                 <div className='right-section'>
                     <h1>Login</h1>
@@ -61,6 +55,11 @@ export default function Login(){
                         {err && <span>{err}</span>}
                         <button onClick={handleSubmit}>Login</button>
                     </form>
+                    <span>Don't have an account? &nbsp;
+                    <Link to="/register">
+                        Register                   
+                    </Link>
+                    </span>
                 </div>
             </div>
         </div>
