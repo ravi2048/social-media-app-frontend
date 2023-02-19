@@ -7,11 +7,9 @@ export const AuthUserContext = createContext();
 // create context provider
 export const AuthUserContextProvider = ({ children }) => {
     const [currUser, setCurrUser] = useState(JSON.parse(localStorage.getItem("currUser")) || null);
-    const backendUrl = 'http://localhost:8800/auth';
-
 
     const login = async (inputs) => {
-        const res = await axios.post(`${backendUrl}/login`, inputs, { withCredentials: true });
+        const res = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/login`, inputs, { withCredentials: true });
         setCurrUser(res.data);
     }
 

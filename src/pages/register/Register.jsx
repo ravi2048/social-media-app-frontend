@@ -4,7 +4,6 @@ import axios from 'axios';
 import "./Register.scss";
 
 export default function Register() {
-    const backendUrl = 'http://localhost:8800/auth';
     const defaultInputs = {
         username: "",
         email: "",
@@ -28,7 +27,7 @@ export default function Register() {
         }
 
         try {
-            await axios.post(`${backendUrl}/register`, inputs);
+            await axios.post(`${process.env.REACT_APP_API_HOST}/auth/register`, inputs);
             setErr(null);
             setInputs(defaultInputs);
         } catch (error) {
