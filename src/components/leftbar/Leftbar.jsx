@@ -79,36 +79,6 @@ export default function Leftbar() {
                         <img src={Courses} alt='' />
                         <span>Courses</span>
                     </div>
-
-
-                    <div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div><div className='item'>
-                        <img src={Courses} alt='' />
-                        <span>Courses</span>
-                    </div>
                 </div>
             </div>
         </div>
