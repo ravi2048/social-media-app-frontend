@@ -3,8 +3,6 @@ import { makeRequest } from "../../axios";
 import "./Update.scss";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { useContext } from "react";
-import { AuthUserContext } from "../../context/authUserContext";
 
 const Update = ({ setOpenUpdate, user }) => {
     const [cover, setCover] = useState(null);

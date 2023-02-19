@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "./Register.scss";
+import { AuthUserContext } from "../../context/authUserContext";
 
 export default function Register() {
     const defaultInputs = {
@@ -13,6 +14,8 @@ export default function Register() {
 
     const [inputs, setInputs] = useState(defaultInputs);
     const [err, setErr] = useState(null);
+    const navigate = useNavigate();
+    const {setCurrUser} = useContext(AuthUserContext);
 
     const handleChange = (e) => {
         setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
@@ -27,9 +30,12 @@ export default function Register() {
         }
 
         try {
-            await axios.post(`${process.env.REACT_APP_API_HOST}/auth/register`, inputs);
+            const newUser = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/register`, inputs, { withCredentials: true });
+            // localStorage.setItem("currUser", JSON.stringify(newUser.data));
+            setCurrUser(newUser.data);
             setErr(null);
             setInputs(defaultInputs);
+            navigate('/');
         } catch (error) {
             const errorContainer = error.response.data;
 
@@ -83,7 +89,6 @@ export default function Register() {
                         sed do eiusmod tempor incididunt ut labore et dolore
                         magna aliqua.
                     </p>
-                    
                 </div>
             </div>
         </div>

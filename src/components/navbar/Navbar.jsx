@@ -1,27 +1,27 @@
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
-import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+// import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+// import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
+// import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { Link } from "react-router-dom";
 import "./Navbar.scss";
 import { useContext } from "react";
-import { DarkThemeContext } from "../../context/themeContext";
+// import { DarkThemeContext } from "../../context/themeContext";
 import { AuthUserContext } from "../../context/authUserContext";
 import appIcon from "../../assets/app-icon.png";
 
 export default function Navbar() {
-    const { darkMode, toggleTheme } = useContext(DarkThemeContext);
+    // const { darkMode, toggleTheme } = useContext(DarkThemeContext);
     const { currUser } = useContext(AuthUserContext);
 
     return (
         <div className='navbar'>
             <div className='left-section'>
                 <Link className="app-icon" style={{ textDecoration: "none" }} to='/'>
-                    <img src={appIcon}/>
+                    <img src={appIcon} alt="app-logo"/>
                     <span>reactSocial</span>
                 </Link>
                 <HomeOutlinedIcon/>

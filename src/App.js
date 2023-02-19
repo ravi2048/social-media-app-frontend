@@ -11,11 +11,11 @@ import Home from "./pages/home/Home";
 import Leftbar from "./components/leftbar/Leftbar";
 import Rightbar from "./components/rightbar/Rightbar.jsx";
 import Profile from "./pages/profile/Profile";
-import './style.scss';
+import "./style.scss";
 import { useContext } from "react";
 import { DarkThemeContext } from "./context/themeContext";
 import { AuthUserContext } from "./context/authUserContext";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
     const { currUser } = useContext(AuthUserContext);
@@ -31,23 +31,21 @@ function App() {
 
     const Layout = () => {
         return (
-            <QueryClientProvider client={queryClient}>
-                <div className={darkMode ? `theme-dark` : `theme-light`}>
-                    <Navbar />
-                    <div style={{ display: "flex" }}>
-                        <Leftbar />
-                        <div style={{flex: 6}}>
-                            <Outlet />
-                        </div>
-                        <Rightbar />
+            <div className={darkMode ? `theme-dark` : `theme-light`}>
+                <Navbar />
+                <div style={{ display: "flex" }}>
+                    <Leftbar />
+                    <div style={{ flex: 6 }}>
+                        <Outlet />
                     </div>
-                </div>  
-            </QueryClientProvider>
+                    <Rightbar />
+                </div>
+            </div>
         );
     };
 
     const ProtectedLayout = ({ children }) => {
-        if (!currUser) {
+        if (!localStorage.getItem("currUser")) {
             return <Navigate to='/login' />;
         }
         return children;
@@ -65,9 +63,11 @@ function App() {
         {
             path: "/",
             element: (
-                <ProtectedLayout>
-                    <Layout />
-                </ProtectedLayout>
+                <QueryClientProvider client={queryClient}>
+                    <ProtectedLayout>
+                        <Layout />
+                    </ProtectedLayout>
+                </QueryClientProvider>
             ),
             children: [
                 {
