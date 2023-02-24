@@ -9,7 +9,7 @@ export const AuthUserContextProvider = ({ children }) => {
     const [currUser, setCurrUser] = useState(JSON.parse(localStorage.getItem("currUser")) || null);
 
     const login = async (inputs) => {
-        const res = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/login`, inputs, { withCredentials: true });
+        const res = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/login`, inputs);
         setCurrUser(res.data);
     }
 
