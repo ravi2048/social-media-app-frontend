@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { makeRequest } from "../../axios";
+import { useContext, useState } from "react";
 import "./Update.scss";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import axios from "axios";
+import { AuthUserContext } from "../../context/authUserContext";
 
 const Update = ({ setOpenUpdate, user }) => {
     const [cover, setCover] = useState(null);
@@ -11,6 +12,13 @@ const Update = ({ setOpenUpdate, user }) => {
     const [email, setEmail] = useState(user.email);
     const [city, setCity] = useState(user.city);
     const [website, setWebsite] = useState(user.website);
+
+    const { setCurrUser } = useContext(AuthUserContext);
+    const config = {
+        headers: {
+            'authorization': `Bearer ${localStorage.getItem("accessToken")}`
+        }
+    }
 
     const handleFileUpload = async(e) => {
         const file = e.target.files[0];
@@ -25,7 +33,7 @@ const Update = ({ setOpenUpdate, user }) => {
 
     const mutation = useMutation(
         (user) => {
-            return makeRequest.put("/users", user);
+            return axios.put(`${process.env.REACT_APP_API_HOST}/users`, user, config);
         },
         {
             onSuccess: () => {
@@ -39,7 +47,7 @@ const Update = ({ setOpenUpdate, user }) => {
         try {
             const formData = new FormData();
             formData.append("file", img);
-            const res = await makeRequest.post("/upload", formData);
+            const res = await axios.post(`${process.env.REACT_APP_API_HOST}/upload`, formData, config);
             return res.data;
         } catch (error) {
             console.log(error);
@@ -48,7 +56,7 @@ const Update = ({ setOpenUpdate, user }) => {
 
     const handleClick = async (e) => {
         e.preventDefault();
-        let coverImg = cover ? cover : user.coverPic;;
+        let coverImg = cover ? cover : user.coverPic;
         let profileImg = profile ? profile : user.profilePic;
 
         let coverUrl = "";
@@ -60,10 +68,22 @@ const Update = ({ setOpenUpdate, user }) => {
             profileUrl = await upload(profileImg);
         }
 
-        mutation.mutate({ name: name, email: email, website: website, city: city, coverPic: coverUrl, profilePic: profileUrl });
+        const updatedUserInfo = {
+            id: user.id,
+            name: name,
+            email: email,
+            website: website,
+            city: city,
+            coverPic: coverUrl? coverUrl : user.coverPic,
+            profilePic: profileUrl ? profileUrl : user.profilePic
+        };
+
+        mutation.mutate(updatedUserInfo);
+        setCurrUser(updatedUserInfo);
         setOpenUpdate(false);
         setCover(null);
         setProfile(null);
+        // localStorage.setItem('currUser', JSON.stringify(updatedUserInfo))
     }
 
     return (

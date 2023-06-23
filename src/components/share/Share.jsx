@@ -5,19 +5,24 @@ import Friend from "../../assets/friend.png";
 import { useContext, useState } from "react";
 import { AuthUserContext } from "../../context/authUserContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
+import axios from "axios";
 
 const Share = () => {
-    const { currUser } = useContext(AuthUserContext);
+    const { currUser, token } = useContext(AuthUserContext);
     const [img, setImg] = useState('');
     const [desc, setDesc] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const config = {
+        headers: {
+            'authorization': `Bearer ${localStorage.getItem("accessToken")}`
+        }
+    }
     const queryClient = useQueryClient();
     // create new post
     const mutation = useMutation((newPost) => {
             setLoading(true);
-            return makeRequest.post("/posts/create", newPost);
+            return axios.post(`${process.env.REACT_APP_API_HOST}/posts/create`, newPost, config);
         },
         {
             onSuccess: () => {
@@ -59,7 +64,7 @@ const Share = () => {
         try {
             const formData = new FormData();
             formData.append("file", img);
-            const res = await makeRequest.post("/upload", formData);
+            const res = await axios.post(`${process.env.REACT_APP_API_HOST}/upload`, formData, config);
             return res.data;
         } catch (error) {
             console.log(error);
