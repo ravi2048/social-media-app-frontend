@@ -2,16 +2,21 @@ import { useContext, useState } from "react";
 import "./Comments.scss";
 import { AuthUserContext } from "../../context/authUserContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../../axios";
 import moment from 'moment';
+import axios from "axios";
 
 const Comments = ({postId, commentsCount}) => {
-    const { currUser } = useContext(AuthUserContext);
+    const { currUser, token } = useContext(AuthUserContext);
     const [newComment, setNewComment] = useState('');
     const [loading, setLoading] = useState(false);
+    const config = {
+        headers: {
+            'authorization': `Bearer ${localStorage.getItem("accessToken")}`
+        }
+    }
 
     const {data, error, isLoading } = useQuery(["comments", postId], () => {
-        return makeRequest.get(`/comments/${postId}`).then(res => {
+        return axios.get(`${process.env.REACT_APP_API_HOST}/comments/${postId}`, config).then(res => {
             return res.data;
         })
     }, {
@@ -22,7 +27,7 @@ const Comments = ({postId, commentsCount}) => {
     const mutation = useMutation(
         (newCommentObj) => {
             setLoading(true);
-            return makeRequest.post(`/comments/addComment/${postId}`, newCommentObj);
+            return axios.post(`${process.env.REACT_APP_API_HOST}/comments/addComment/${postId}`, newCommentObj, config);
         },
         {
             onSuccess: () => {

@@ -8,9 +8,9 @@ import { Link } from "react-router-dom";
 import Comments from "../comments/Comments";
 import { useContext, useState } from "react";
 import moment from 'moment';
-import { makeRequest } from "../../axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AuthUserContext } from "../../context/authUserContext";
+import axios from "axios";
 
 const Post = ({ post }) => {
     const { currUser } = useContext(AuthUserContext);
@@ -19,10 +19,15 @@ const Post = ({ post }) => {
     const queryClient = useQueryClient();
     let likesCount = 0;
     let commentsCount = 0;
-    
+    const config = {
+        headers: {
+            'authorization': `Bearer ${localStorage.getItem("accessToken")}`
+        }
+    }
+
     // fetch likes
     const likesObj = useQuery(["likesCount", post.id], () => {
-        return makeRequest.get(`/likes/${post.id}`).then(res => {
+        return axios.get(`${process.env.REACT_APP_API_HOST}/likes/${post.id}`, config).then(res => {
             return res.data;
         });
     });
@@ -32,7 +37,7 @@ const Post = ({ post }) => {
 
     // fetch comments
     const commentsObj = useQuery(["commentsCount", post.id], () => {
-        return makeRequest.get(`/comments/count/${post.id}`).then(res => {
+        return axios.get(`${process.env.REACT_APP_API_HOST}/comments/count/${post.id}`, config).then(res => {
             return res.data;
         });
     });
@@ -47,9 +52,9 @@ const Post = ({ post }) => {
                 postId: post.id,
                 userId: currUser.id
             }
-            return makeRequest.post(`/likes/${post.id}`, newLikeObj);
+            return axios.post(`${process.env.REACT_APP_API_HOST}/likes/${post.id}`, newLikeObj, config);
         } else {
-            return makeRequest.delete(`/likes/${post.id}`);
+            return axios.delete(`${process.env.REACT_APP_API_HOST}/likes/${post.id}`, config);
         }
     }, {
         onSuccess: () => {
@@ -64,7 +69,7 @@ const Post = ({ post }) => {
     };
 
     const deleteMutation = useMutation((postId) => {
-        return makeRequest.delete(`/posts/${postId}`);
+        return axios.delete(`${process.env.REACT_APP_API_HOST}/posts/${postId}`, config);
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries(["posts"]);

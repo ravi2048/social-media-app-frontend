@@ -15,7 +15,8 @@ import appIcon from "../../assets/app-icon.png";
 
 export default function Navbar() {
     // const { darkMode, toggleTheme } = useContext(DarkThemeContext);
-    const { currUser } = useContext(AuthUserContext);
+    // const currUser = JSON.parse(localStorage.getItem("currUser"));
+    const { currUser } = useContext(AuthUserContext)
 
     return (
         <div className='navbar'>
@@ -41,7 +42,7 @@ export default function Navbar() {
                 <EmailOutlinedIcon />
                 <NotificationsOutlinedIcon />
                 <Link
-                    to={`/profile/${currUser.id}`}
+                    to={`/profile/${currUser?.id}`}
                     style={{
                         textDecoration: "none",
                         color: "inherit",
@@ -50,9 +51,9 @@ export default function Navbar() {
                     <div className='user-icon'>
                         <img
                             alt='user-icon'
-                            src={`${process.env.REACT_APP_API_HOST}/files/${currUser.profilePic}`}
+                            src={`${process.env.REACT_APP_API_HOST}/files/${currUser?.profilePic}`}
                         />
-                        <span style={{textTransform: "capitalize"}}>{currUser.name}</span>
+                        <span style={{textTransform: "capitalize"}}>{currUser?.name}</span>
                     </div>
                 </Link>
 

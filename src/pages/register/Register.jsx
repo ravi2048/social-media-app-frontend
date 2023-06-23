@@ -15,7 +15,7 @@ export default function Register() {
     const [inputs, setInputs] = useState(defaultInputs);
     const [err, setErr] = useState(null);
     const navigate = useNavigate();
-    const {setCurrUser} = useContext(AuthUserContext);
+    const {setCurrUser, setToken} = useContext(AuthUserContext);
 
     const handleChange = (e) => {
         setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
@@ -30,9 +30,10 @@ export default function Register() {
         }
 
         try {
-            const newUser = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/register`, inputs, { withCredentials: true });
+            const newUser = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/register`, inputs);
             // localStorage.setItem("currUser", JSON.stringify(newUser.data));
-            setCurrUser(newUser.data);
+            setCurrUser(newUser.data.userInfo);
+            setToken(newUser.data.accessToken);
             setErr(null);
             setInputs(defaultInputs);
             navigate('/');
