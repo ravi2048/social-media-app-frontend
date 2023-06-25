@@ -38,14 +38,14 @@ const Stories = () => {
     return (
         <div className='stories'>
             <div className='story'>
-                <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser.profilePic}`} alt='' />
-                <span>{currUser.name}</span>
+                <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser?.profilePic}`} alt='' />
+                <span>{currUser?.name}</span>
                 <button>+</button>
             </div>
             {stories.map((story) => (
-                <div className='story' key={story.id}>
-                    <img src={story.img} alt='' />
-                    <span>{story.name}</span>
+                <div className='story' key={story?.id}>
+                    <img src={story?.img} alt='' />
+                    <span>{story?.name}</span>
                 </div>
             ))}
         </div>

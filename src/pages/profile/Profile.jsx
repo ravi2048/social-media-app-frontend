@@ -37,12 +37,11 @@ const Profile = () => {
         })
     });
 
-    const relationObj = useQuery(["relation", currUser.id, userId], () => {
+    const relationObj = useQuery(["relation", currUser?.id, userId], () => {
         return axios.get(`${process.env.REACT_APP_API_HOST}/relations?friendId=${userId}`, config).then((res) => {
             return res.data;
         });
     });
-    // {"status":"success","fetchStatus":"idle","isLoading":false,"isSuccess":true,"isError":false,"isInitialLoading":false,"data":{"id":3,"userId":7,"friendId":3,"UserId":7},"dataUpdatedAt":1676184385312,"error":null,"errorUpdatedAt":0,"failureCount":0,"failureReason":null,"errorUpdateCount":0,"isFetched":true,"isFetchedAfterMount":true,"isFetching":false,"isRefetching":false,"isLoadingError":false,"isPaused":false,"isPlaceholderData":false,"isPreviousData":false,"isRefetchError":false,"isStale":true}
 
     // follow/unfollow
     const mutation = useMutation(
@@ -57,7 +56,7 @@ const Profile = () => {
             onSuccess: () => {
                 queryClient.invalidateQueries([
                     "relation",
-                    currUser.id,
+                    currUser?.id,
                     userId,
                 ], ["user", userId]);
             },
@@ -79,7 +78,7 @@ const Profile = () => {
         setLoading(false);
     };
 
-    const userData = currUser.id == userId ? currUser : data;
+    const userData = currUser?.id == userId ? currUser : data;
     return (
         <>
             {error ? (
@@ -91,7 +90,7 @@ const Profile = () => {
                     <div className='images'>
                         <img src={`${process.env.REACT_APP_API_HOST}/files/${userData.coverPic}`} alt='' className='cover' />
                         <img
-                            src={`${process.env.REACT_APP_API_HOST}/files/${userData.profilePic}`}
+                            src={`${process.env.REACT_APP_API_HOST}/files/${userData?.profilePic}`}
                             alt=''
                             className='profilePic'
                         />
@@ -99,7 +98,7 @@ const Profile = () => {
                     <div className='profileContainer'>
                         <div className='uInfo'>
                             <div className='user-name'>
-                                <span>{userData.name}</span>
+                                <span>{userData?.name}</span>
                             </div>
                             <div className='other-info'>
                                 <div className='left'>
@@ -117,7 +116,7 @@ const Profile = () => {
                                     </div>
                                 </div>
                                 <div className='right'>
-                                    {currUser.id == userId ? (
+                                    {currUser?.id == userId ? (
                                         <button
                                             onClick={() => setOpenUpdate(true)}
                                         >

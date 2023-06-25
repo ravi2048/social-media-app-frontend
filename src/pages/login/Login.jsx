@@ -13,16 +13,19 @@ export default function Login(){
 
     const [inputs, setInputs] = useState(defaultInputs);
     const [err, setErr] = useState(null);
-
+    const [loading, setLoading] = useState(false);
+    
     const handleChange = (e) => {
         setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
         setErr(null);
     }
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         if(inputs.username === "" || inputs.password === "") {
             setErr('Please fill all the fields!');
+            setLoading(false);
             return;
         }
 
@@ -34,6 +37,7 @@ export default function Login(){
         } catch (error) {
             setErr(error.response.data);
         }
+        setLoading(false);
     }
 
     return (
@@ -53,7 +57,9 @@ export default function Login(){
                         <input name='username' type='text' placeholder="Username" onChange={handleChange}/>
                         <input name='password' type='password' placeholder="Password" onChange={handleChange}/>
                         {err && <span>{err}</span>}
-                        <button onClick={handleSubmit}>Login</button>
+                        <button onClick={handleSubmit} disabled={loading}>
+                            {loading ? 'On it...' : 'Login'}
+                        </button>
                     </form>
                     <span>Don't have an account? &nbsp;
                     <Link to="/register">

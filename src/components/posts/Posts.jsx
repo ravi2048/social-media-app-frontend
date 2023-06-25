@@ -29,7 +29,7 @@ const Posts = ({userId}) => {
             {error ? (
                 "Something went wrong"
             ) : !isLoading ? (
-                data.map((post) => <Post post={post} key={post.id} />)
+                data.map((post) => <Post post={post} key={post?.id} />)
             ) : (
                 <span>Loading...</span>
             )}

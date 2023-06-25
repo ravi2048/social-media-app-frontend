@@ -26,8 +26,8 @@ const Post = ({ post }) => {
     }
 
     // fetch likes
-    const likesObj = useQuery(["likesCount", post.id], () => {
-        return axios.get(`${process.env.REACT_APP_API_HOST}/likes/${post.id}`, config).then(res => {
+    const likesObj = useQuery(["likesCount", post?.id], () => {
+        return axios.get(`${process.env.REACT_APP_API_HOST}/likes/${post?.id}`, config).then(res => {
             return res.data;
         });
     });
@@ -36,8 +36,8 @@ const Post = ({ post }) => {
     }
 
     // fetch comments
-    const commentsObj = useQuery(["commentsCount", post.id], () => {
-        return axios.get(`${process.env.REACT_APP_API_HOST}/comments/count/${post.id}`, config).then(res => {
+    const commentsObj = useQuery(["commentsCount", post?.id], () => {
+        return axios.get(`${process.env.REACT_APP_API_HOST}/comments/count/${post?.id}`, config).then(res => {
             return res.data;
         });
     });
@@ -49,22 +49,22 @@ const Post = ({ post }) => {
     const mutation = useMutation((isLiked) => {
         if(!isLiked) {
             const newLikeObj = {
-                postId: post.id,
-                userId: currUser.id
+                postId: post?.id,
+                userId: currUser?.id
             }
-            return axios.post(`${process.env.REACT_APP_API_HOST}/likes/${post.id}`, newLikeObj, config);
+            return axios.post(`${process.env.REACT_APP_API_HOST}/likes/${post?.id}`, newLikeObj, config);
         } else {
-            return axios.delete(`${process.env.REACT_APP_API_HOST}/likes/${post.id}`, config);
+            return axios.delete(`${process.env.REACT_APP_API_HOST}/likes/${post?.id}`, config);
         }
     }, {
         onSuccess: () => {
-            queryClient.invalidateQueries(["likesCount", post.id]);
+            queryClient.invalidateQueries(["likesCount", post?.id]);
         }
     });
 
 
     const likesHandler = async() => {
-        const isLiked = likesObj.data.includes(currUser.id);
+        const isLiked = likesObj.data.includes(currUser?.id);
         mutation.mutate(isLiked);
     };
 
@@ -77,7 +77,7 @@ const Post = ({ post }) => {
     });
 
     const postDeleteHandler = async () => {
-        deleteMutation.mutate(post.id);
+        deleteMutation.mutate(post?.id);
     }
 
     return (
@@ -85,7 +85,7 @@ const Post = ({ post }) => {
             <div className='container'>
                 <div className='user'>
                     <div className='userInfo'>
-                        <img src={`${process.env.REACT_APP_API_HOST}/files/${post.user.profilePic}`} alt='' />
+                        <img src={`${process.env.REACT_APP_API_HOST}/files/${post.user?.profilePic}`} alt='' />
                         <div className='details'>
                             <Link
                                 to={`/profile/${post.userId}`}
@@ -94,7 +94,7 @@ const Post = ({ post }) => {
                                     color: "inherit",
                                 }}
                             >
-                                <span className='name'>{post.user.name}</span>
+                                <span className='name'>{post.user?.name}</span>
                             </Link>
                             <span className='date'>
                                 {moment(
@@ -104,7 +104,7 @@ const Post = ({ post }) => {
                             </span>
                         </div>
                     </div>
-                    {currUser.id === post.userId && (
+                    {currUser?.id === post?.userId && (
                         <MoreHorizIcon
                             style={{ cursor: "pointer" }}
                             onClick={() =>
@@ -113,7 +113,9 @@ const Post = ({ post }) => {
                         />
                     )}
                     {openPostActionMenu && (
-                        <button onClick={postDeleteHandler}>Delete</button>
+                        <div className="delete-post" onClick={postDeleteHandler}>
+                            Delete
+                        </div>
                     )}
                 </div>
                 <div className='content'>
@@ -128,7 +130,7 @@ const Post = ({ post }) => {
                 <div className='info'>
                     <div className='item' onClick={likesHandler}>
                         {!likesObj.isLoading &&
-                        likesObj.data.includes(currUser.id) ? (
+                        likesObj.data.includes(currUser?.id) ? (
                             <FavoriteOutlinedIcon style={{ color: "red" }} />
                         ) : (
                             <FavoriteBorderOutlinedIcon />
@@ -147,7 +149,7 @@ const Post = ({ post }) => {
                         Share
                     </div>
                 </div>
-                {commentOpen && <Comments postId={post.id} commentsCount={commentsCount} />}
+                {commentOpen && <Comments postId={post?.id} commentsCount={commentsCount} />}
             </div>
         </div>
     );

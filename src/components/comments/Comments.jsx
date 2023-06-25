@@ -49,14 +49,14 @@ const Comments = ({postId, commentsCount}) => {
         }
         mutation.mutate({
             desc: newComment,
-            userId: currUser.id
+            userId: currUser?.id
         });
     }
 
     return (
         <div className='comments'>
             <div className='write'>
-                <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser.profilePic}`} alt='' />
+                <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser?.profilePic}`} alt='' />
                 <input type='text' placeholder='write a comment' value={newComment} onChange={(e) => setNewComment(e.target.value)} />
                 <button onClick={handleSubmit}>{loading ? 'Sending..' : 'Send'}</button>
             </div>
@@ -64,10 +64,10 @@ const Comments = ({postId, commentsCount}) => {
                 "Something went wrong"
             ) : !isLoading ? (
                 data.map((comment) => (
-                    <div className='comment' key={comment.id}>
-                        <img src={`${process.env.REACT_APP_API_HOST}/files/${comment.user.profilePic}`} alt='' />
+                    <div className='comment' key={comment?.id}>
+                        <img src={`${process.env.REACT_APP_API_HOST}/files/${comment.user?.profilePic}`} alt='' />
                         <div className='info'>
-                            <span className="user-name">{comment.user.name}</span>
+                            <span className="user-name">{comment.user?.name}</span>
                             <p>{comment.desc}</p>
                         </div>
                         <span className='date'>{moment(comment.createdAt, 'YYYY-MM-DD HH:mm:ss').fromNow()}</span>

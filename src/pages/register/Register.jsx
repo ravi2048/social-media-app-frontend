@@ -5,6 +5,9 @@ import "./Register.scss";
 import { AuthUserContext } from "../../context/authUserContext";
 
 export default function Register() {
+    const navigate = useNavigate();
+    const { setCurrUser } = useContext(AuthUserContext);
+
     const defaultInputs = {
         username: "",
         email: "",
@@ -14,8 +17,7 @@ export default function Register() {
 
     const [inputs, setInputs] = useState(defaultInputs);
     const [err, setErr] = useState(null);
-    const navigate = useNavigate();
-    const {setCurrUser, setToken} = useContext(AuthUserContext);
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
@@ -23,9 +25,11 @@ export default function Register() {
     }
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         if(inputs.username === "" || inputs.email === "" || inputs.password === "" || inputs.name === "") {
             setErr('Please fill all the fields!');
+            setLoading(false);
             return;
         }
 
@@ -33,7 +37,8 @@ export default function Register() {
             const newUser = await axios.post(`${process.env.REACT_APP_API_HOST}/auth/register`, inputs);
             // localStorage.setItem("currUser", JSON.stringify(newUser.data));
             setCurrUser(newUser.data.userInfo);
-            setToken(newUser.data.accessToken);
+            localStorage.setItem("accessToken", newUser.data.accessToken);
+            // setToken(newUser.data.accessToken);
             setErr(null);
             setInputs(defaultInputs);
             navigate('/');
@@ -47,6 +52,7 @@ export default function Register() {
                 setErr(error.response.data);
             }
         }
+        setLoading(false);
     }
 
     return (
@@ -75,7 +81,9 @@ export default function Register() {
                             onChange={handleChange}
                         />
                         {err && <span>{err}</span>}
-                        <button onClick={handleSubmit}>Register</button>
+                        <button onClick={handleSubmit} disabled={loading}>
+                            {loading ? 'On it...' : 'Register'}
+                        </button>
                         <span>Already have an account? &nbsp;
                         <Link to="/login">
                             Login

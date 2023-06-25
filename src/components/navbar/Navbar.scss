@@ -73,24 +73,66 @@
             gap: 20px;
 
             
-            @include mobile {
-                display: none;
-            }
+            // @include mobile {
+            //     display: none;
+            // }
 
             .user-icon {
                 display: flex;
+                flex-direction: column;
+                position: relative;
                 align-items: center;
                 gap: 5px;
-                img {
-                    height: 30px;
-                    width: 30px;
-                    border-radius: 50%;
-                    object-fit: cover;
+
+                .on-navbar {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    cursor: pointer;
+
+                    img {
+                        height: 30px;
+                        width: 30px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+    
+                    span {
+                        font-size: 18px;
+                        font-weight: 500;
+                        padding-right: 5px;
+                    }
                 }
 
-                span {
-                    font-size: 18px;
-                    font-weight: 500;
+                .profile-panel {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 3px;
+                    background-color: #f6f3f3;
+                    width: 6rem;
+                    position: absolute;
+                    right: 0;
+                    top: 2.7rem;
+                    padding: 10px;
+                    font-size: 0.9rem;
+                    border-radius: 5px;
+                    
+                    -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                    -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                    box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+
+                    div {
+                        padding: 5px;
+                    }
+
+                    div:hover {
+                        background-color: rgb(237, 233, 233);
+                        border-radius: 5px;
+                    }
+
+                    .logout-link {
+                        cursor: pointer;
+                    }
                 }
             }
         }

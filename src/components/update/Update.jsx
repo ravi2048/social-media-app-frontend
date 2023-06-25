@@ -8,10 +8,11 @@ import { AuthUserContext } from "../../context/authUserContext";
 const Update = ({ setOpenUpdate, user }) => {
     const [cover, setCover] = useState(null);
     const [profile, setProfile] = useState(null);
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState(user.email);
-    const [city, setCity] = useState(user.city);
-    const [website, setWebsite] = useState(user.website);
+    const [name, setName] = useState(user?.name);
+    const [email, setEmail] = useState(user?.email);
+    const [city, setCity] = useState(user?.city);
+    const [website, setWebsite] = useState(user?.website);
+    const [loading, setLoading] = useState(false);
 
     const { setCurrUser } = useContext(AuthUserContext);
     const config = {
@@ -38,7 +39,7 @@ const Update = ({ setOpenUpdate, user }) => {
         {
             onSuccess: () => {
                 // Invalidate and refetch
-                queryClient.invalidateQueries(["user", user.id]);
+                queryClient.invalidateQueries(["user", user?.id]);
             },
         }
     );
@@ -55,9 +56,10 @@ const Update = ({ setOpenUpdate, user }) => {
     }
 
     const handleClick = async (e) => {
+        setLoading(true);
         e.preventDefault();
-        let coverImg = cover ? cover : user.coverPic;
-        let profileImg = profile ? profile : user.profilePic;
+        let coverImg = cover ? cover : user?.coverPic;
+        let profileImg = profile ? profile : user?.profilePic;
 
         let coverUrl = "";
         let profileUrl = "";
@@ -69,17 +71,18 @@ const Update = ({ setOpenUpdate, user }) => {
         }
 
         const updatedUserInfo = {
-            id: user.id,
+            id: user?.id,
             name: name,
             email: email,
             website: website,
             city: city,
-            coverPic: coverUrl? coverUrl : user.coverPic,
-            profilePic: profileUrl ? profileUrl : user.profilePic
+            coverPic: coverUrl? coverUrl : user?.coverPic,
+            profilePic: profileUrl ? profileUrl : user?.profilePic
         };
 
         mutation.mutate(updatedUserInfo);
         setCurrUser(updatedUserInfo);
+        setLoading(false);
         setOpenUpdate(false);
         setCover(null);
         setProfile(null);
@@ -112,7 +115,7 @@ const Update = ({ setOpenUpdate, user }) => {
                             <span>Profile Picture</span>
                             <div className="imgContainer">
                                 <img
-                                    src={ profile ? URL.createObjectURL(profile) : `${process.env.REACT_APP_API_HOST}/files/${user.profilePic}` }
+                                    src={ profile ? URL.createObjectURL(profile) : `${process.env.REACT_APP_API_HOST}/files/${user?.profilePic}` }
                                     alt=""
                                 />
                                 <CloudUploadIcon className="icon" />
@@ -157,7 +160,7 @@ const Update = ({ setOpenUpdate, user }) => {
                         value={website}
                         onChange={(e) => setWebsite(e.target.value)}
                     />
-                    <button onClick={handleClick}>Update</button>
+                    <button onClick={handleClick} disabled={loading}>Update</button>
                 </form>
                 <button className="close" onClick={() => setOpenUpdate(false)}>
                     close

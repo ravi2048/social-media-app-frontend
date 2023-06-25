@@ -47,14 +47,32 @@
                     }
                 }
 
-                button {
-                    cursor: pointer;
+                .delete-post {
                     position: absolute;
                     top: 30px;
                     right: 0;
-                    padding: 0 5px;
                     border-radius: 5px;
+                    background-color: #f6f3f3;
+                    padding: 6px;
+                    font-size: 0.8rem;
+                    cursor: pointer;
+                    
+                    -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                    -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+                    box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
                 }
+
+                .delete-post:hover {
+                    background-color: rgb(237, 233, 233);
+                }
+                // button {
+                //     cursor: pointer;
+                //     position: absolute;
+                //     top: 30px;
+                //     right: 0;
+                //     padding: 0 5px;
+                //     border-radius: 5px;
+                // }
             }
 
             .content {
