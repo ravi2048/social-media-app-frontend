@@ -12,13 +12,13 @@ import Leftbar from "./components/leftbar/Leftbar";
 import Rightbar from "./components/rightbar/Rightbar.jsx";
 import Profile from "./pages/profile/Profile";
 import "./style.scss";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DarkThemeContext } from "./context/themeContext";
 import { AuthUserContext } from "./context/authUserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
-    const { currUser } = useContext(AuthUserContext);
+    const { currUser, token } = useContext(AuthUserContext);
     const { darkMode } = useContext(DarkThemeContext);
     const queryClient = new QueryClient({
         defaultOptions: {
@@ -45,7 +45,8 @@ function App() {
     };
 
     const ProtectedLayout = ({ children }) => {
-        if (!localStorage.getItem("currUser")) {
+        const currToken = localStorage.getItem("accessToken");
+        if (!currToken) {
             return <Navigate to='/login' />;
         }
         return children;

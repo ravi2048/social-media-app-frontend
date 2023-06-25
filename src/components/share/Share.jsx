@@ -89,10 +89,10 @@ const Share = () => {
             <div className='container'>
                 <div className='top'>
                     <div className="left">
-                        <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser.profilePic}`} alt='profileImg' />
+                        <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser?.profilePic}`} alt='profileImg' />
                         <input
                             type='text'
-                            placeholder={`What's on your mind ${currUser.name.split(" ")[0]}?`}
+                            placeholder={`What's on your mind ${currUser?.name.split(" ")[0]}?`}
                             onChange={e => setDesc(e.target.value)}
                             value={desc}
                         />
