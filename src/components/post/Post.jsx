@@ -85,7 +85,7 @@ const Post = ({ post }) => {
             <div className='container'>
                 <div className='user'>
                     <div className='userInfo'>
-                        <img src={`${process.env.REACT_APP_API_HOST}/files/${post.user?.profilePic}`} alt='' />
+                        <img src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${post.user?.profilePic}`} alt='' />
                         <div className='details'>
                             <Link
                                 to={`/profile/${post.userId}`}
@@ -122,7 +122,7 @@ const Post = ({ post }) => {
                     <p>{post.desc}</p>
                     {post.img && (
                         <img
-                            src={`${process.env.REACT_APP_API_HOST}/files/${post.img}`}
+                            src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${post.img}`}
                             alt=''
                         />
                     )}

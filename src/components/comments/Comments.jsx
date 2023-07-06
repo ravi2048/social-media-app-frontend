@@ -56,7 +56,7 @@ const Comments = ({postId, commentsCount}) => {
     return (
         <div className='comments'>
             <div className='write'>
-                <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser?.profilePic}`} alt='' />
+                <img src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${currUser?.profilePic}`} alt='' />
                 <input type='text' placeholder='write a comment' value={newComment} onChange={(e) => setNewComment(e.target.value)} />
                 <button onClick={handleSubmit}>{loading ? 'Sending..' : 'Send'}</button>
             </div>
@@ -65,7 +65,7 @@ const Comments = ({postId, commentsCount}) => {
             ) : !isLoading ? (
                 data.map((comment) => (
                     <div className='comment' key={comment?.id}>
-                        <img src={`${process.env.REACT_APP_API_HOST}/files/${comment.user?.profilePic}`} alt='' />
+                        <img src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${comment.user?.profilePic}`} alt='' />
                         <div className='info'>
                             <span className="user-name">{comment.user?.name}</span>
                             <p>{comment.desc}</p>
