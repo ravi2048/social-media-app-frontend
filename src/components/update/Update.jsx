@@ -13,6 +13,7 @@ const Update = ({ setOpenUpdate, user }) => {
     const [city, setCity] = useState(user?.city);
     const [website, setWebsite] = useState(user?.website);
     const [loading, setLoading] = useState(false);
+    const [fileLoading, setFileLoading] = useState(false);
 
     const { setCurrUser } = useContext(AuthUserContext);
     const config = {
@@ -22,12 +23,15 @@ const Update = ({ setOpenUpdate, user }) => {
     }
 
     const handleFileUpload = async(e) => {
+        console.log(`starting upload..`);
+        setFileLoading(true);
         const file = e.target.files[0];
         if(file.size > 2097152) {
             alert('Please upload image of size less than 2MB');
             return;
         }
-        e.target.id === 'cover' ? setCover(file): setProfile(file);        
+        e.target.id === 'cover' ? setCover(file): setProfile(file);
+        setFileLoading(false);
     };
 
     const queryClient = useQueryClient();
@@ -48,7 +52,7 @@ const Update = ({ setOpenUpdate, user }) => {
         try {
             const formData = new FormData();
             formData.append("file", img);
-            const res = await axios.post(`${process.env.REACT_APP_API_HOST}/upload`, formData, config);
+            const res = await axios.post(`${process.env.REACT_APP_API_HOST}/files/upload`, formData, config);
             return res.data;
         } catch (error) {
             console.log(error);
@@ -99,14 +103,15 @@ const Update = ({ setOpenUpdate, user }) => {
                             <span>Cover Picture</span>
                             <div className="imgContainer">
                                 <img
-                                    src={ cover ? URL.createObjectURL(cover) : `${process.env.REACT_APP_API_HOST}/files/${user.coverPic}` }
+                                    src={ cover ? URL.createObjectURL(cover) : `${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${user.coverPic}` }
                                     alt=""
                                 />
-                                <CloudUploadIcon className="icon" />
+                                {fileLoading ? 'Uploading...' : <CloudUploadIcon className="icon" />}
                             </div>
                         </label>
                         <input
                             type="file"
+                            name="file"
                             id="cover"
                             style={{ display: "none" }}
                             onChange={handleFileUpload}
@@ -115,7 +120,7 @@ const Update = ({ setOpenUpdate, user }) => {
                             <span>Profile Picture</span>
                             <div className="imgContainer">
                                 <img
-                                    src={ profile ? URL.createObjectURL(profile) : `${process.env.REACT_APP_API_HOST}/files/${user?.profilePic}` }
+                                    src={ profile ? URL.createObjectURL(profile) : `${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${user?.profilePic}` }
                                     alt=""
                                 />
                                 <CloudUploadIcon className="icon" />
@@ -123,6 +128,7 @@ const Update = ({ setOpenUpdate, user }) => {
                         </label>
                         <input
                             type="file"
+                            name="file"
                             id="profile"
                             style={{ display: "none" }}
                             onChange={handleFileUpload}

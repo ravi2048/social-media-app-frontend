@@ -64,7 +64,7 @@ const Share = () => {
         try {
             const formData = new FormData();
             formData.append("file", img);
-            const res = await axios.post(`${process.env.REACT_APP_API_HOST}/upload`, formData, config);
+            const res = await axios.post(`${process.env.REACT_APP_API_HOST}/files/upload`, formData, config);
             return res.data;
         } catch (error) {
             console.log(error);
@@ -89,7 +89,7 @@ const Share = () => {
             <div className='container'>
                 <div className='top'>
                     <div className="left">
-                        <img src={`${process.env.REACT_APP_API_HOST}/files/${currUser?.profilePic}`} alt='profileImg' />
+                        <img src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${currUser?.profilePic}`} alt='profileImg' />
                         <input
                             type='text'
                             placeholder={`What's on your mind ${currUser?.name.split(" ")[0]}?`}

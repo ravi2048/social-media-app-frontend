@@ -52,7 +52,7 @@ export default function Navbar() {
                         <div className="on-navbar">
                             <img
                                 alt='user-icon'
-                                src={`${process.env.REACT_APP_API_HOST}/files/${currUser?.profilePic}`}
+                                src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${currUser?.profilePic}`}
                             />
                             <span style={{textTransform: "capitalize"}}>{currUser?.name}</span>
                         </div>

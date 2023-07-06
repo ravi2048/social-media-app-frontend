@@ -88,9 +88,9 @@ const Profile = () => {
             ) : (
                 <div className='profile'>
                     <div className='images'>
-                        <img src={`${process.env.REACT_APP_API_HOST}/files/${userData.coverPic}`} alt='' className='cover' />
+                        <img src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${userData?.coverPic}`} alt='' className='cover' />
                         <img
-                            src={`${process.env.REACT_APP_API_HOST}/files/${userData?.profilePic}`}
+                            src={`${process.env.REACT_APP_GOOGLE_CLOUD_STORAGE_BASE_URL}/${userData?.profilePic}`}
                             alt=''
                             className='profilePic'
                         />
